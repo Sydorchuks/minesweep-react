@@ -2,8 +2,6 @@
 
 A classic Minesweeper game built with React and TypeScript.
 
-The project keeps the main game rules inside TypeScript classes, while React is used only for rendering the UI and connecting user actions to the game logic through hooks.
-
 ## Features
 
 - Three difficulty levels: beginner, intermediate, and expert.
@@ -11,7 +9,7 @@ The project keeps the main game rules inside TypeScript classes, while React is 
 - Left click reveals a cell.
 - Right click places or removes a flag.
 - Timer and mine counter.
-- Win and loss result banner.
+- Win and loss result popup.
 - Dark and light theme.
 - Responsive board layout with zoom control.
 - Development mode toggle for showing mines locally.
@@ -20,8 +18,7 @@ The project keeps the main game rules inside TypeScript classes, while React is 
 
 - React
 - TypeScript
-- Vite
-- CSS modules by component folder
+- CSS
 
 ## Project Structure
 
@@ -58,7 +55,7 @@ useMinesweeper()
 React components
 ```
 
-This keeps the game rules separate from the UI.
+Game rules are separate from the UI.
 
 ## Getting Started
 
