@@ -1,0 +1,101 @@
+.cell {
+  position: relative;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  min-width: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--tile-border);
+  border-radius: 5px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.86), transparent 38%),
+    linear-gradient(315deg, var(--tile-c), var(--tile-b) 58%, var(--tile-a));
+  color: #18202f;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: clamp(14px, calc(var(--cell-size) * 0.58), 21px);
+  line-height: 1;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.92),
+    inset -3px -3px 0 rgba(73, 82, 102, 0.42);
+}
+
+.cell:hover {
+  filter: brightness(1.08);
+}
+
+.cell:active {
+  transform: translateY(1px);
+}
+
+.cell.revealed {
+  cursor: default;
+  transform: none;
+  border-color: var(--tile-border);
+  background: var(--tile-open);
+  box-shadow: inset 0 2px 5px rgba(20, 26, 40, 0.18);
+}
+
+.cell.flagged {
+  color: #e31b3f;
+  text-shadow: 0 1px 0 #ffffff;
+}
+
+.cell.mine {
+  background: linear-gradient(180deg, #d84b62, #9e2036);
+  border-color: #6e1325;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+.cell.debug-mine {
+  outline: 2px solid var(--red);
+  outline-offset: -3px;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.92),
+    inset -3px -3px 0 rgba(73, 82, 102, 0.42),
+    0 0 0 2px rgba(255, 65, 54, 0.28),
+    0 0 14px rgba(255, 65, 54, 0.42);
+}
+
+.cell.debug-mine::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px rgba(255, 65, 54, 0.75);
+  transform: translate(-50%, -50%);
+}
+
+.cell[data-value="1"] {
+  color: #1e5fbf;
+}
+
+.cell[data-value="2"] {
+  color: #168746;
+}
+
+.cell[data-value="3"] {
+  color: #ca2f25;
+}
+
+.cell[data-value="4"] {
+  color: #5946bd;
+}
+
+.cell[data-value="5"] {
+  color: #8c2f62;
+}
+
+.cell[data-value="6"] {
+  color: #0f7886;
+}
+
+.cell[data-value="7"],
+.cell[data-value="8"] {
+  color: #252a37;
+}

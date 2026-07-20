@@ -1,0 +1,56 @@
+.shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1800px;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(14px, 2vw, 22px);
+  margin: 0 auto;
+}
+
+@media (min-width: 1600px) {
+  .shell {
+    gap: 26px;
+  }
+
+  .hint {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 2200px) {
+  .shell {
+    gap: 30px;
+  }
+}
+
+.hint {
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+@media (max-width: 768px) {
+  .shell {
+    align-content: start;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shell {
+    gap: 8px;
+  }
+
+  .hint {
+    max-width: 100%;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+}

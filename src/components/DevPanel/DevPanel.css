@@ -1,0 +1,47 @@
+.dev-panel {
+  width: 100%;
+  max-width: 820px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px dashed rgba(255, 65, 54, 0.55);
+  border-radius: 8px;
+  background: rgba(255, 65, 54, 0.08);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+@media (min-width: 1600px) {
+  .dev-panel {
+    max-width: 940px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 2200px) {
+  .dev-panel {
+    max-width: 1040px;
+  }
+}
+
+.dev-panel > span {
+  color: var(--red);
+  letter-spacing: 0;
+}
+
+.dev-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.dev-toggle input {
+  accent-color: var(--red);
+}

@@ -1,0 +1,1 @@
+export const formatCounter = (value: number): string => String(Math.max(0, Math.min(999, value))).padStart(3, "0");
