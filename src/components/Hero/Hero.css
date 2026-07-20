@@ -33,7 +33,15 @@
 
 @media (min-width: 2200px) {
   .hero h1 {
-    font-size: 96px;
+    font-size: 112px;
+  }
+
+  .hero p {
+    font-size: 22px;
+  }
+
+  .theme-switch {
+    font-size: 14px;
   }
 }
 

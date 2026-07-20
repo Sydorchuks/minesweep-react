@@ -7,7 +7,7 @@ const createGame = (difficulty: DifficultyKey): MinesweeperGame =>
 
 export const useMinesweeper = (initialDifficulty: DifficultyKey = "beginner") => {
   const [difficulty, setDifficulty] = useState<DifficultyKey>(initialDifficulty);
-  const [revision, setRevision] = useState(0);
+  const [version, setVersion] = useState(0);
   const gameRef = useRef<MinesweeperGame | null>(null);
 
   if (gameRef.current === null) {
@@ -15,7 +15,7 @@ export const useMinesweeper = (initialDifficulty: DifficultyKey = "beginner") =>
   }
 
   const forceRender = useCallback(() => {
-    setRevision((current) => current + 1);
+    setVersion((current) => current + 1);
   }, []);
 
   const reset = useCallback(
@@ -54,10 +54,8 @@ export const useMinesweeper = (initialDifficulty: DifficultyKey = "beginner") =>
       minesLeft: game.getMinesLeft(),
       reset,
       revealCell,
-      revision,
-      rows: board.rows,
       status: game.status as GameStatus,
       toggleFlag
     };
-  }, [difficulty, reset, revealCell, revision, toggleFlag]);
+  }, [difficulty, reset, revealCell, toggleFlag, version]);
 };

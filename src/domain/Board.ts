@@ -56,13 +56,12 @@ export class Board {
     this.calculateAdjacentMines();
   }
 
-  reveal(position: Position): Cell[] {
+  reveal(position: Position): void {
     const start = this.getCell(position);
     if (start.isFlagged || start.isRevealed) {
-      return [];
+      return;
     }
 
-    const revealed: Cell[] = [];
     const queue: Position[] = [position];
     const visited = new Set<string>();
 
@@ -80,14 +79,11 @@ export class Board {
       }
 
       cell.reveal();
-      revealed.push(cell);
 
       if (!cell.hasMine && cell.adjacentMines === 0) {
         queue.push(...this.getNeighbors(current));
       }
     }
-
-    return revealed;
   }
 
   revealAllMines(): void {

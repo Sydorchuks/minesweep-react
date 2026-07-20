@@ -55,8 +55,8 @@
 
 @media (max-width: 480px) {
   .board-frame {
-    inline-size: 100% !important;
-    width: 100% !important;
+    inline-size: 100%;
+    width: 100%;
     padding: 8px;
   }
 

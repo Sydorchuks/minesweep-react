@@ -41,6 +41,11 @@ export class MinesweeperGame {
       return;
     }
 
+    const cell = this.board.getCell(position);
+    if (!cell.isFlagged && this.board.countFlags() >= this.config.mines) {
+      return;
+    }
+
     this.board.toggleFlag(position);
   }
 

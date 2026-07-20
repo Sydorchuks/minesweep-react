@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { GameStatus } from "../domain/models";
 
-export const useElapsedSeconds = (status: GameStatus, revision: number): number => {
+export const useElapsedSeconds = (status: GameStatus): number => {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [seconds, setSeconds] = useState(0);
 
@@ -15,7 +15,7 @@ export const useElapsedSeconds = (status: GameStatus, revision: number): number 
     if (status === "playing" && startedAt === null) {
       setStartedAt(Date.now());
     }
-  }, [startedAt, status, revision]);
+  }, [startedAt, status]);
 
   useEffect(() => {
     if (status !== "playing" || startedAt === null) {

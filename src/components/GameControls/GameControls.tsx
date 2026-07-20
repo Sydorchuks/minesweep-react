@@ -1,4 +1,3 @@
-import type { RefObject } from "react";
 import { faceByStatus, uiText } from "../../constants/uiText";
 import type { DifficultyKey, GameStatus } from "../../domain/models";
 import { formatCounter } from "../../utils/formatCounter";
@@ -13,7 +12,6 @@ interface GameControlsProps {
   onDifficultyChange: (difficulty: DifficultyKey) => void;
   onReset: () => void;
   onZoomChange: (zoom: number) => void;
-  consoleRef: RefObject<HTMLElement>;
 }
 
 export const GameControls = ({
@@ -24,10 +22,9 @@ export const GameControls = ({
   zoom,
   onDifficultyChange,
   onReset,
-  onZoomChange,
-  consoleRef
+  onZoomChange
 }: GameControlsProps) => (
-  <section className="console" aria-label={uiText.gamePanel} ref={consoleRef}>
+  <section className="console" aria-label={uiText.gamePanel}>
     <label className="level-control">
       <span>{uiText.level}</span>
       <select
