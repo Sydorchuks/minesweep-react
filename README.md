@@ -1,42 +1,99 @@
-# Minesweeper React + TypeScript
+# Minesweeper React
 
-Full React version of the Minesweeper game.
+A classic Minesweeper game built with React and TypeScript.
 
-The main game logic is kept in classes, and React connects to it through hooks.
+The project keeps the main game rules inside TypeScript classes, while React is used only for rendering the UI and connecting user actions to the game logic through hooks.
 
-## Structure
+## Features
 
-- `src/domain/` - pure game logic, no React:
-  - `Cell` - one board cell.
-  - `Mine` - one mine.
-  - `Board` - cells, neighbors, mine placement, revealing empty areas.
-  - `MinesweeperGame` - game rules, status, win/loss flow.
-- `src/hooks/useMinesweeper.ts` - connects the class-based game to React state.
-- `src/hooks/useElapsedSeconds.ts` - game timer.
-- `src/hooks/useBoardSize.ts` - responsive board width, cell size, and zoom.
-- `src/components/` - React UI split by component.
-- `src/components/*/*.css` - component-specific styles.
-- `src/styles/theme.css` - design tokens and theme variables.
-- `src/styles/global.css` - global reset, body layout, and background.
-- `src/App.css` - app shell layout.
+- Three difficulty levels: beginner, intermediate, and expert.
+- First click is always safe.
+- Left click reveals a cell.
+- Right click places or removes a flag.
+- Timer and mine counter.
+- Win and loss result banner.
+- Dark and light theme.
+- Responsive board layout with zoom control.
+- Development mode toggle for showing mines locally.
 
-## Run
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- CSS modules by component folder
+
+## Project Structure
+
+```text
+src/
+  components/       React UI components
+  constants/        Text labels and UI copy
+  domain/           Game logic classes
+  hooks/            React hooks that connect logic to UI
+  styles/           Global styles and theme variables
+  utils/            Small helper functions
+```
+
+## Game Logic
+
+The core logic is placed in `src/domain`.
+
+```text
+Cell
+Mine
+Board
+MinesweeperGame
+```
+
+`MinesweeperGame` controls the current game status, win/loss flow, mine placement, revealing cells, and flagging cells.
+
+React connects to this logic through `useMinesweeper`.
+
+```text
+TypeScript classes
+        |
+useMinesweeper()
+        |
+React components
+```
+
+This keeps the game rules separate from the UI.
+
+## Getting Started
+
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Run the development server:
+
+```bash
 npm run dev
 ```
 
-Then open the URL printed by Vite.
+Build the project:
 
-## Architecture
-
-```text
-Board / Cell / Mine / MinesweeperGame
-                |
-          useMinesweeper()
-                |
-             React UI
+```bash
+npm run build
 ```
 
-The classes do not know anything about DOM or React. The hook calls class methods and asks React to rerender the interface.
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+```
+
+## Notes
+
+The dev mine preview is available only in development mode. It is useful for testing the board and does not affect the normal game flow.
