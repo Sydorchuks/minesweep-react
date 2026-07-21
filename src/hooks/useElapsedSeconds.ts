@@ -24,7 +24,7 @@ export const useElapsedSeconds = (status: GameStatus): number => {
 
     const update = () => setSeconds(Math.floor((Date.now() - startedAt) / 1000));
     update();
-    const timerId = window.setInterval(update, 500);
+    const timerId = window.setInterval(update, 1000);
 
     return () => window.clearInterval(timerId);
   }, [startedAt, status]);

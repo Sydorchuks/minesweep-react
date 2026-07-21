@@ -45,15 +45,14 @@ export class Board {
       }
     }
 
-    this.shuffle(available);
-    const minePositions = available.slice(0, this.mineCount);
-    this.mines = minePositions.map((position) => new Mine(position));
+    for (let index = 0; index < this.mineCount && available.length > 0; index++) {
+      const randomIndex = Math.floor(Math.random() * available.length);
+      const minePosition = available[randomIndex];
+      available[randomIndex] = available[available.length - 1];
+      available.pop();
 
-    for (const mine of this.mines) {
-      this.getCell(mine.getPosition()).hasMine = true;
+      this.addMine(minePosition);
     }
-
-    this.calculateAdjacentMines();
   }
 
   reveal(position: Position): void {
@@ -110,13 +109,12 @@ export class Board {
     );
   }
 
-  private calculateAdjacentMines(): void {
-    for (const row of this.cells) {
-      for (const cell of row) {
-        cell.adjacentMines = this.getNeighbors(cell.position).filter(
-          (position) => this.getCell(position).hasMine
-        ).length;
-      }
+  private addMine(position: Position): void {
+    this.mines.push(new Mine(position));
+    this.getCell(position).hasMine = true;
+
+    for (const neighbor of this.getNeighbors(position)) {
+      this.getCell(neighbor).adjacentMines += 1;
     }
   }
 
@@ -154,12 +152,5 @@ export class Board {
 
   private key(position: Position): string {
     return `${position.row}:${position.column}`;
-  }
-
-  private shuffle<T>(items: T[]): void {
-    for (let index = items.length - 1; index > 0; index--) {
-      const randomIndex = Math.floor(Math.random() * (index + 1));
-      [items[index], items[randomIndex]] = [items[randomIndex], items[index]];
-    }
   }
 }

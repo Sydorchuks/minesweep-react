@@ -11,7 +11,7 @@ export class MinesweeperGame {
   }
 
   reveal(position: Position): void {
-    if (this.status === "won" || this.status === "lost") {
+    if (this.isFinished()) {
       return;
     }
 
@@ -37,7 +37,7 @@ export class MinesweeperGame {
   }
 
   toggleFlag(position: Position): void {
-    if (this.status === "won" || this.status === "lost") {
+    if (this.isFinished()) {
       return;
     }
 
@@ -51,5 +51,9 @@ export class MinesweeperGame {
 
   getMinesLeft(): number {
     return this.config.mines - this.board.countFlags();
+  }
+
+  private isFinished(): boolean {
+    return this.status === "won" || this.status === "lost";
   }
 }
