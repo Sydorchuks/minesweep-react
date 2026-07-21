@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MinesweeperGame } from "../domain/MinesweeperGame";
 import { DIFFICULTIES, type DifficultyKey, type GameStatus, type Position } from "../domain/models";
 
@@ -19,24 +19,23 @@ const getGameState = (game: MinesweeperGame, difficulty: DifficultyKey) => {
 
 export const useMinesweeper = (initialDifficulty: DifficultyKey = "beginner") => {
   const [difficulty, setDifficulty] = useState<DifficultyKey>(initialDifficulty);
-  const gameRef = useRef<MinesweeperGame | null>(null);
+  const [game, setGame] = useState(() => createGame(initialDifficulty));
+  const [gameState, setGameState] = useState(() => getGameState(game, initialDifficulty));
 
-  if (gameRef.current === null) {
-    gameRef.current = createGame(initialDifficulty);
-  }
+  useEffect(() => {
+    setGameState(getGameState(game, difficulty));
 
-  const [gameState, setGameState] = useState(() => getGameState(gameRef.current!, initialDifficulty));
-
-  const syncGameState = useCallback(() => {
-    setGameState(getGameState(gameRef.current!, difficulty));
-  }, [difficulty]);
+    return game.subscribe(() => {
+      setGameState(getGameState(game, difficulty));
+    });
+  }, [difficulty, game]);
 
   const reset = useCallback(
     (nextDifficulty = difficulty) => {
       const nextGame = createGame(nextDifficulty);
 
       setDifficulty(nextDifficulty);
-      gameRef.current = nextGame;
+      setGame(nextGame);
       setGameState(getGameState(nextGame, nextDifficulty));
     },
     [difficulty]
@@ -44,18 +43,16 @@ export const useMinesweeper = (initialDifficulty: DifficultyKey = "beginner") =>
 
   const revealCell = useCallback(
     (position: Position) => {
-      gameRef.current!.reveal(position);
-      syncGameState();
+      game.reveal(position);
     },
-    [syncGameState]
+    [game]
   );
 
   const toggleFlag = useCallback(
     (position: Position) => {
-      gameRef.current!.toggleFlag(position);
-      syncGameState();
+      game.toggleFlag(position);
     },
-    [syncGameState]
+    [game]
   );
 
   return {

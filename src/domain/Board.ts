@@ -31,15 +31,13 @@ export class Board {
   }
 
   placeMines(safePosition: Position): void {
-    const forbidden = new Set(
-      [safePosition, ...this.getNeighbors(safePosition)].map((position) => this.key(position))
-    );
+    const safeKey = this.key(safePosition);
 
     const available: Position[] = [];
     for (let row = 0; row < this.rows; row++) {
       for (let column = 0; column < this.columns; column++) {
         const position = { row, column };
-        if (!forbidden.has(this.key(position))) {
+        if (this.key(position) !== safeKey) {
           available.push(position);
         }
       }
