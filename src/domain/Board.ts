@@ -32,24 +32,20 @@ export class Board {
 
   placeMines(safePosition: Position): void {
     const safeKey = this.key(safePosition);
+    const minesToPlace = Math.min(this.mineCount, this.rows * this.columns - 1);
 
-    const available: Position[] = [];
-    for (let row = 0; row < this.rows; row++) {
-      for (let column = 0; column < this.columns; column++) {
-        const position = { row, column };
-        if (this.key(position) !== safeKey) {
-          available.push(position);
-        }
+    while (this.mines.length < minesToPlace) {
+      const position = {
+        row: Math.floor(Math.random() * this.rows),
+        column: Math.floor(Math.random() * this.columns)
+      };
+
+      const cell = this.getCell(position);
+      if (this.key(position) === safeKey || cell.hasMine) {
+        continue;
       }
-    }
 
-    for (let index = 0; index < this.mineCount && available.length > 0; index++) {
-      const randomIndex = Math.floor(Math.random() * available.length);
-      const minePosition = available[randomIndex];
-      available[randomIndex] = available[available.length - 1];
-      available.pop();
-
-      this.addMine(minePosition);
+      this.addMine(position);
     }
   }
 

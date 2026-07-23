@@ -3,42 +3,45 @@ import { MinesweeperGame } from "../domain/MinesweeperGame";
 import { DIFFICULTIES, type DifficultyKey, type GameStatus, type Position } from "../domain/models";
 
 const createGame = (difficulty: DifficultyKey): MinesweeperGame =>
-  new MinesweeperGame(DIFFICULTIES[difficulty]);
+  new MinesweeperGame(difficulty, DIFFICULTIES[difficulty]);
 
-const getGameState = (game: MinesweeperGame, difficulty: DifficultyKey) => {
+const getGameState = (game: MinesweeperGame) => {
   const board = game.board;
 
   return {
     cells: board.getCells(),
     columns: board.columns,
-    difficulty,
+    difficulty: game.difficulty,
     minesLeft: game.getMinesLeft(),
     status: game.status as GameStatus
   };
 };
 
 export const useMinesweeper = (initialDifficulty: DifficultyKey = "beginner") => {
-  const [difficulty, setDifficulty] = useState<DifficultyKey>(initialDifficulty);
   const [game, setGame] = useState(() => createGame(initialDifficulty));
-  const [gameState, setGameState] = useState(() => getGameState(game, initialDifficulty));
+  const [gameState, setGameState] = useState(() => getGameState(game));
 
   useEffect(() => {
-    setGameState(getGameState(game, difficulty));
+    const updateGameState = () => {
+      setGameState(getGameState(game));
+    };
 
-    return game.subscribe(() => {
-      setGameState(getGameState(game, difficulty));
-    });
-  }, [difficulty, game]);
+    game.subscribe(updateGameState);
+    updateGameState();
+
+    return () => {
+      game.unsubscribe(updateGameState);
+    };
+  }, [game]);
 
   const reset = useCallback(
-    (nextDifficulty = difficulty) => {
+    (nextDifficulty = gameState.difficulty) => {
       const nextGame = createGame(nextDifficulty);
 
-      setDifficulty(nextDifficulty);
       setGame(nextGame);
-      setGameState(getGameState(nextGame, nextDifficulty));
+      setGameState(getGameState(nextGame));
     },
-    [difficulty]
+    [gameState.difficulty]
   );
 
   const revealCell = useCallback(

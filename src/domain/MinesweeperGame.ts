@@ -1,5 +1,5 @@
 import { Board } from "./Board";
-import type { BoardConfig, GameStatus, Position } from "./models";
+import type { BoardConfig, DifficultyKey, GameStatus, Position } from "./models";
 
 type GameListener = () => void;
 
@@ -9,7 +9,10 @@ export class MinesweeperGame {
   private hasPlacedMines = false;
   private listeners = new Set<GameListener>();
 
-  constructor(private readonly config: BoardConfig) {
+  constructor(
+    public readonly difficulty: DifficultyKey,
+    private readonly config: BoardConfig
+  ) {
     this.board = new Board(config);
   }
 
@@ -17,8 +20,12 @@ export class MinesweeperGame {
     this.listeners.add(listener);
 
     return () => {
-      this.listeners.delete(listener);
+      this.unsubscribe(listener);
     };
+  }
+
+  unsubscribe(listener: GameListener): void {
+    this.listeners.delete(listener);
   }
 
   reveal(position: Position): void {
