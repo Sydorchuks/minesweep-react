@@ -1,61 +1,67 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MinesweeperGame } from "../domain/MinesweeperGame";
 import { DIFFICULTIES, type DifficultyKey, type GameStatus, type Position } from "../domain/models";
 
 const createGame = (difficulty: DifficultyKey): MinesweeperGame =>
-  new MinesweeperGame(DIFFICULTIES[difficulty]);
+  new MinesweeperGame(difficulty, DIFFICULTIES[difficulty]);
+
+const getGameState = (game: MinesweeperGame) => {
+  const board = game.board;
+
+  return {
+    cells: board.getCells(),
+    columns: board.columns,
+    difficulty: game.difficulty,
+    minesLeft: game.getMinesLeft(),
+    status: game.status as GameStatus
+  };
+};
 
 export const useMinesweeper = (initialDifficulty: DifficultyKey = "beginner") => {
-  const [difficulty, setDifficulty] = useState<DifficultyKey>(initialDifficulty);
-  const [version, setVersion] = useState(0);
-  const gameRef = useRef<MinesweeperGame | null>(null);
+  const [game, setGame] = useState(() => createGame(initialDifficulty));
+  const [gameState, setGameState] = useState(() => getGameState(game));
 
-  if (gameRef.current === null) {
-    gameRef.current = createGame(initialDifficulty);
-  }
+  useEffect(() => {
+    const updateGameState = () => {
+      setGameState(getGameState(game));
+    };
 
-  const forceRender = useCallback(() => {
-    setVersion((current) => current + 1);
-  }, []);
+    game.subscribe(updateGameState);
+    updateGameState();
+
+    return () => {
+      game.unsubscribe(updateGameState);
+    };
+  }, [game]);
 
   const reset = useCallback(
-    (nextDifficulty = difficulty) => {
-      setDifficulty(nextDifficulty);
-      gameRef.current = createGame(nextDifficulty);
-      forceRender();
+    (nextDifficulty = gameState.difficulty) => {
+      const nextGame = createGame(nextDifficulty);
+
+      setGame(nextGame);
+      setGameState(getGameState(nextGame));
     },
-    [difficulty, forceRender]
+    [gameState.difficulty]
   );
 
   const revealCell = useCallback(
     (position: Position) => {
-      gameRef.current!.reveal(position);
-      forceRender();
+      game.reveal(position);
     },
-    [forceRender]
+    [game]
   );
 
   const toggleFlag = useCallback(
     (position: Position) => {
-      gameRef.current!.toggleFlag(position);
-      forceRender();
+      game.toggleFlag(position);
     },
-    [forceRender]
+    [game]
   );
 
-  return useMemo(() => {
-    const game = gameRef.current!;
-    const board = game.board;
-
-    return {
-      cells: board.getCells(),
-      columns: board.columns,
-      difficulty,
-      minesLeft: game.getMinesLeft(),
-      reset,
-      revealCell,
-      status: game.status as GameStatus,
-      toggleFlag
-    };
-  }, [difficulty, reset, revealCell, toggleFlag, version]);
+  return {
+    ...gameState,
+    reset,
+    revealCell,
+    toggleFlag
+  };
 };

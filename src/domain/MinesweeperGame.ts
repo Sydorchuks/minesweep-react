@@ -1,17 +1,35 @@
 import { Board } from "./Board";
-import type { BoardConfig, GameStatus, Position } from "./models";
+import type { BoardConfig, DifficultyKey, GameStatus, Position } from "./models";
+
+type GameListener = () => void;
 
 export class MinesweeperGame {
   public board: Board;
   public status: GameStatus = "ready";
   private hasPlacedMines = false;
+  private listeners = new Set<GameListener>();
 
-  constructor(private readonly config: BoardConfig) {
+  constructor(
+    public readonly difficulty: DifficultyKey,
+    private readonly config: BoardConfig
+  ) {
     this.board = new Board(config);
   }
 
+  subscribe(listener: GameListener): () => void {
+    this.listeners.add(listener);
+
+    return () => {
+      this.unsubscribe(listener);
+    };
+  }
+
+  unsubscribe(listener: GameListener): void {
+    this.listeners.delete(listener);
+  }
+
   reveal(position: Position): void {
-    if (this.status === "won" || this.status === "lost") {
+    if (this.isFinished()) {
       return;
     }
 
@@ -26,6 +44,7 @@ export class MinesweeperGame {
       cell.reveal();
       this.board.revealAllMines();
       this.status = "lost";
+      this.notify();
       return;
     }
 
@@ -34,10 +53,12 @@ export class MinesweeperGame {
     if (this.board.hasWon()) {
       this.status = "won";
     }
+
+    this.notify();
   }
 
   toggleFlag(position: Position): void {
-    if (this.status === "won" || this.status === "lost") {
+    if (this.isFinished()) {
       return;
     }
 
@@ -47,9 +68,20 @@ export class MinesweeperGame {
     }
 
     this.board.toggleFlag(position);
+    this.notify();
   }
 
   getMinesLeft(): number {
     return this.config.mines - this.board.countFlags();
+  }
+
+  private isFinished(): boolean {
+    return this.status === "won" || this.status === "lost";
+  }
+
+  private notify(): void {
+    for (const listener of this.listeners) {
+      listener();
+    }
   }
 }

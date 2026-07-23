@@ -31,29 +31,22 @@ export class Board {
   }
 
   placeMines(safePosition: Position): void {
-    const forbidden = new Set(
-      [safePosition, ...this.getNeighbors(safePosition)].map((position) => this.key(position))
-    );
+    const safeKey = this.key(safePosition);
+    const minesToPlace = Math.min(this.mineCount, this.rows * this.columns - 1);
 
-    const available: Position[] = [];
-    for (let row = 0; row < this.rows; row++) {
-      for (let column = 0; column < this.columns; column++) {
-        const position = { row, column };
-        if (!forbidden.has(this.key(position))) {
-          available.push(position);
-        }
+    while (this.mines.length < minesToPlace) {
+      const position = {
+        row: Math.floor(Math.random() * this.rows),
+        column: Math.floor(Math.random() * this.columns)
+      };
+
+      const cell = this.getCell(position);
+      if (this.key(position) === safeKey || cell.hasMine) {
+        continue;
       }
+
+      this.addMine(position);
     }
-
-    this.shuffle(available);
-    const minePositions = available.slice(0, this.mineCount);
-    this.mines = minePositions.map((position) => new Mine(position));
-
-    for (const mine of this.mines) {
-      this.getCell(mine.getPosition()).hasMine = true;
-    }
-
-    this.calculateAdjacentMines();
   }
 
   reveal(position: Position): void {
@@ -110,13 +103,12 @@ export class Board {
     );
   }
 
-  private calculateAdjacentMines(): void {
-    for (const row of this.cells) {
-      for (const cell of row) {
-        cell.adjacentMines = this.getNeighbors(cell.position).filter(
-          (position) => this.getCell(position).hasMine
-        ).length;
-      }
+  private addMine(position: Position): void {
+    this.mines.push(new Mine(position));
+    this.getCell(position).hasMine = true;
+
+    for (const neighbor of this.getNeighbors(position)) {
+      this.getCell(neighbor).adjacentMines += 1;
     }
   }
 
@@ -154,12 +146,5 @@ export class Board {
 
   private key(position: Position): string {
     return `${position.row}:${position.column}`;
-  }
-
-  private shuffle<T>(items: T[]): void {
-    for (let index = items.length - 1; index > 0; index--) {
-      const randomIndex = Math.floor(Math.random() * (index + 1));
-      [items[index], items[randomIndex]] = [items[randomIndex], items[index]];
-    }
   }
 }
